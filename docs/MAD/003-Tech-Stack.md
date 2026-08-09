@@ -741,8 +741,6 @@ ESLint
 
 Prettier
 
-Claude Code
-
 Git
 ```
 

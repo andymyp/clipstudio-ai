@@ -63,8 +63,6 @@ Software Engineers
 
 AI Engineers
 
-Claude Code
-
 Codex
 
 Future Maintainers
