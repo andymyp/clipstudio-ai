@@ -12,12 +12,13 @@
 - Development tooling configuration added.
 - Project initialization completed: deployable backend, desktop shell, CI, scripts, and local stack configuration added.
 - Backend core architecture completed: API envelope, error policy, DI container, repository/service/task ports, middleware, and security interfaces added.
+- Database architecture completed: SQLite SQLAlchemy entities, async engine lifecycle, Alembic migration, seed path, repositories, constraints, indexes, and schema tests added.
 
 ## In Progress
 
-- None. Prompt 002 is complete and awaiting checkpoint approval.
+- None. Prompt 003 is complete and awaiting checkpoint approval.
 
 ## Remaining
 
-- Execute Prompt 003 onward in the mandated order after checkpoint approval.
+- Execute Prompt 004 onward in the mandated order after checkpoint approval.
 - Add business capabilities only in their assigned prompts.

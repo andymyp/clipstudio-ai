@@ -11,6 +11,7 @@ from .api.health import router as health_router
 from .api.router import api_router
 from .core.config import get_settings
 from .core.logging import configure_logging, get_logger
+from .dependencies.container import get_container
 from .middleware.error import ErrorCaptureMiddleware
 from .middleware.logging import RequestLoggingMiddleware
 
@@ -19,11 +20,14 @@ from .middleware.logging import RequestLoggingMiddleware
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     """Initialize and shut down process-level infrastructure."""
     settings = get_settings()
+    container = get_container()
     configure_logging(settings)
     logger = get_logger("clipstudio.application")
+    await container.database.start()
     logger.info("application_starting", extra={"event": "application_starting"})
     yield
     logger.info("application_stopping", extra={"event": "application_stopping"})
+    await container.database.dispose()
 
 
 def create_app() -> FastAPI:
