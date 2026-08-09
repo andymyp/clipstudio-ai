@@ -19,6 +19,7 @@ class AppConfig(BaseModel):
     version: str = "0.1.0"
     environment: Literal["development", "testing", "production"] = "development"
     debug: bool = False
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
 
@@ -90,10 +91,14 @@ class Settings(BaseSettings):
 
         mappings: dict[str, tuple[str, str]] = {
             "CLIPSTUDIO_ENVIRONMENT": ("app", "environment"),
+            "APP_ENV": ("app", "environment"),
             "CLIPSTUDIO_DEBUG": ("app", "debug"),
+            "LOG_LEVEL": ("app", "log_level"),
+            "CLIPSTUDIO_LOG_LEVEL": ("app", "log_level"),
             "CLIPSTUDIO_HOST": ("app", "host"),
             "CLIPSTUDIO_PORT": ("app", "port"),
             "CLIPSTUDIO_DATABASE_URL": ("database", "url"),
+            "DATABASE_URL": ("database", "url"),
             "CLIPSTUDIO_STORAGE_PATH": ("storage", "path"),
             "CLIPSTUDIO_LOG_PATH": ("storage", "log_path"),
         }

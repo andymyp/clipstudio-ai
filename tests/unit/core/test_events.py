@@ -1,7 +1,8 @@
 """Event bus tests."""
 
 import pytest
-from app.core.events import Event, EventBus
+
+from backend.app.core.events import Event, EventBus
 
 
 @pytest.mark.asyncio

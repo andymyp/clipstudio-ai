@@ -5,6 +5,7 @@ description = "Local-first AI content production control plane"
 requires-python = ">=3.12"
 dependencies = [
     "aiosqlite>=0.20,<1",
+    "alembic>=1.14,<2",
     "fastapi>=0.115,<1",
     "pydantic-settings>=2.6,<3",
     "pyyaml>=6.0,<7",

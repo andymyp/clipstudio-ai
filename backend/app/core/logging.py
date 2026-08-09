@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
-from app.core.config import Settings
+from .config import Settings
 
 trace_id: ContextVar[str] = ContextVar("trace_id", default="")
 
@@ -39,7 +39,7 @@ def configure_logging(settings: Settings) -> None:
     log_path = Path(settings.storage.log_path)
     log_path.mkdir(parents=True, exist_ok=True)
     root = logging.getLogger()
-    root.setLevel(logging.DEBUG if settings.app.debug else logging.INFO)
+    root.setLevel(getattr(logging, settings.app.log_level))
     if getattr(root, "_clipstudio_configured", False):
         return
 

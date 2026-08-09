@@ -2,8 +2,8 @@
 
 from fastapi import APIRouter
 
-from app.core.config import get_settings
-from app.database.session import database_health
+from ..core.config import get_settings
+from ..database.session import database_health
 
 router = APIRouter()
 

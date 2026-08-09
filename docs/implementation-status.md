@@ -10,12 +10,13 @@
 - Structured JSON console/file logging added.
 - Base exception taxonomy and in-process event bus added.
 - Development tooling configuration added.
+- Project initialization completed: deployable backend, desktop shell, CI, scripts, and local stack configuration added.
 
 ## In Progress
 
-- None. Prompt 000 is complete and awaiting checkpoint approval.
+- None. Prompt 001 is complete and awaiting checkpoint approval.
 
 ## Remaining
 
-- Execute Prompt 001 onward in the mandated order after checkpoint approval.
+- Execute Prompt 002 onward in the mandated order after checkpoint approval.
 - Add business capabilities only in their assigned prompts.

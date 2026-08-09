@@ -1,7 +1,8 @@
 """Foundation API integration tests."""
 
-from app.main import create_app
 from fastapi.testclient import TestClient
+
+from backend.app.main import create_app
 
 
 def test_health_endpoint() -> None:

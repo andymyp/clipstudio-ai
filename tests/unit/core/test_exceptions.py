@@ -1,6 +1,6 @@
 """Exception taxonomy tests."""
 
-from app.core.exceptions import ProcessingError, ValidationError
+from backend.app.core.exceptions import ProcessingError, ValidationError
 
 
 def test_domain_error_keeps_recovery_context() -> None:
