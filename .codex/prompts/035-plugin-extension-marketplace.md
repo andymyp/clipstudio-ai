@@ -1,5 +1,5 @@
 # ClipStudio AI
-# Claude Code Implementation Prompt
+# Implementation Prompt
 
 ## Prompt 035
 ## Plugin & Extension Marketplace Architecture Implementation

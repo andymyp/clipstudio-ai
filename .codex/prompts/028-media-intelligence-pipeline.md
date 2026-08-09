@@ -1,5 +1,5 @@
 # ClipStudio AI
-# Claude Code Implementation Prompt
+# Implementation Prompt
 
 ## Prompt 028
 ## Advanced Media Intelligence Pipeline Implementation

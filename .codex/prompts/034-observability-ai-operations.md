@@ -1,5 +1,5 @@
 # ClipStudio AI
-# Claude Code Implementation Prompt
+# Implementation Prompt
 
 ## Prompt 034
 ## AI Operations & Observability Center Implementation

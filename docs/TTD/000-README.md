@@ -280,7 +280,7 @@ Documentation
 
 # 11. AI Coding Agent Rules
 
-Claude Code / Codex must:
+/ Codex must:
 
 ```
 Read MAD

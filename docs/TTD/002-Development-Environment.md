@@ -410,9 +410,9 @@ Docker
 
 ---
 
-# 19. Claude Code Integration
+# 19. Integration
 
-Claude Code must read:
+must read:
 
 ```
 /docs/MAD

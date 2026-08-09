@@ -24,7 +24,7 @@ The following documents depend on this MAD:
 - PRD
 - TTD
 - Development Tasks
-- Claude Code Prompts
+- Prompts
 - AI Coding Instructions
 - Testing Documents
 - Deployment Documents

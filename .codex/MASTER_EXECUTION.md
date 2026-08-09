@@ -16,7 +16,7 @@ ClipStudio AI
 
 # ROLE 
 
-You are Claude Code acting as:
+You are acting as:
 
 Principal Software Architect
 
@@ -198,7 +198,7 @@ Read prompt file:
 Example:
 
 ```
-.claude/prompts/000-foundation.md
+.codex/prompts/000-foundation.md
 ```
 
 

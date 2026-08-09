@@ -501,7 +501,7 @@ Production
 
 ---
 
-# 24. Claude Code Rules
+# 24. Rules
 
 Before creating files:
 
