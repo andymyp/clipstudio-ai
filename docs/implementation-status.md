@@ -16,12 +16,13 @@
 - REST API architecture completed: versioned resource routers, standard envelopes, local-token context, validation/error handling, pagination/filtering, system endpoints, and OpenAPI contract tests added.
 - Agent system completed: generic lifecycle runtime, plugin tools, planner/evaluator loop, short/long/semantic memory, persistence-aware manager, bounded async execution, events, templates, and integration tests added.
 - Workflow engine completed: persisted workflow/task definitions, state machines, dependency-aware sequential/parallel execution, retries, queue/cancellation controls, progress/error tracking, events, templates, and integration tests added.
+- Discovery engine completed: metadata-first source connectors, normalization, filtering, candidate ranking, URL/content-hash/semantic deduplication ports, VideoSource and ProcessingHistory storage, events, workflow integration, and offline tests added.
 
 ## In Progress
 
-- None. Prompt 006 is complete and awaiting checkpoint approval.
+- None. Prompt 007 is complete and awaiting checkpoint approval.
 
 ## Remaining
 
-- Execute Prompt 007 onward in the mandated order after checkpoint approval.
+- Execute Prompt 008 onward in the mandated order after checkpoint approval.
 - Add business capabilities only in their assigned prompts.

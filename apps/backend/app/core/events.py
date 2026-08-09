@@ -89,6 +89,50 @@ class WorkflowFailed(WorkflowEvent):
     error: str = ""
 
 
+@dataclass(frozen=True, slots=True)
+class DiscoveryEvent(Event):
+    """Base event for one discovery query."""
+
+    query_id: str = ""
+    platform: str | None = None
+
+
+class DiscoveryStarted(DiscoveryEvent):
+    """Published when source searching starts."""
+
+
+@dataclass(frozen=True, slots=True)
+class VideoFound(DiscoveryEvent):
+    """Published when a new metadata candidate is stored."""
+
+    video_id: str = ""
+    url: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class VideoFiltered(DiscoveryEvent):
+    """Published when a candidate is rejected by filtering or deduplication."""
+
+    url: str = ""
+    reason: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class DiscoveryCompleted(DiscoveryEvent):
+    """Published when all configured source connectors finish."""
+
+    found_count: int = 0
+    filtered_count: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class DuplicateDetected(DiscoveryEvent):
+    """Published when an exact or near duplicate is identified."""
+
+    url: str = ""
+    reason: str = ""
+
+
 EventHandler = Callable[[Event], Awaitable[None]]
 
 

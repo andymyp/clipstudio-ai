@@ -20,6 +20,13 @@ class VideoRepository(BaseRepository[VideoSource]):
         )
         return result.scalar_one_or_none()
 
+    async def get_by_content_hash(self, content_hash: str) -> VideoSource | None:
+        """Return a source with an exact content hash when one exists."""
+        result = await self.session.execute(
+            select(VideoSource).where(VideoSource.content_hash == content_hash)
+        )
+        return result.scalar_one_or_none()
+
     async def list_filtered(
         self,
         *,
