@@ -1,0 +1,907 @@
+# ClipStudio AI
+# Master Architecture Document
+
+Document:
+005-Agent-Architecture.md
+
+Version:
+1.0.0
+
+Status:
+Approved
+
+Dependencies:
+
+- 000-README.md
+- 001-Vision.md
+- 002-Architecture-Principles.md
+- 003-Tech-Stack.md
+- 004-System-Architecture.md
+
+Referenced By:
+
+- 006-Workflow Engine
+- 007-Discovery Engine
+- 010-AI Analysis
+- 011-Scoring Engine
+- 018-Configuration
+
+---
+
+# 1. Purpose
+
+This document defines the architecture of the ClipStudio AI Agent System.
+
+Agents are the autonomous intelligence units responsible for executing content production workflows.
+
+An Agent represents:
+
+"A specialized AI worker configured to discover, analyze, and produce a specific category of short-form content."
+
+---
+
+# 2. Agent Concept
+
+An Agent is not a chatbot.
+
+An Agent is an autonomous workflow definition.
+
+Example:
+
+```
+Funny Moment Agent
+
+Goal:
+Find funny moments from videos.
+
+Input:
+Long-form videos.
+
+Process:
+Discover
+Analyze
+Score
+Clip
+Render
+
+Output:
+Funny short videos.
+```
+
+---
+
+# 3. Agent Architecture Overview
+
+```
+                User
+
+                 |
+
+                 ▼
+
+          Agent Manager
+
+                 |
+
+                 ▼
+
+          Agent Instance
+
+                 |
+
+        ┌────────┴────────┐
+
+        ▼                 ▼
+
+ Configuration       Runtime State
+
+        |
+
+        ▼
+
+ Workflow Engine
+
+        |
+
+        ▼
+
+ AI Pipeline
+```
+
+---
+
+# 4. Agent Responsibilities
+
+An Agent is responsible for:
+
+- defining content objective
+- selecting sources
+- controlling workflow
+- choosing AI models
+- defining scoring rules
+- defining output style
+- managing execution schedule
+- storing results
+
+An Agent is NOT responsible for:
+
+- low-level video processing
+- database operations
+- rendering implementation
+- AI model execution
+
+---
+
+# 5. Agent Lifecycle
+
+Every agent follows this lifecycle:
+
+```
+Created
+
+↓
+
+Configured
+
+↓
+
+Disabled
+
+↓
+
+Activated
+
+↓
+
+Running
+
+↓
+
+Paused
+
+↓
+
+Completed
+
+↓
+
+Disabled
+
+↓
+
+Deleted
+```
+
+---
+
+# 6. Agent State Machine
+
+```
+                CREATE
+
+                  |
+
+                  ▼
+
+              INACTIVE
+
+                  |
+
+             Activate
+
+                  |
+
+                  ▼
+
+               ACTIVE
+
+                  |
+
+              Execute
+
+                  |
+
+                  ▼
+
+              RUNNING
+
+             /        \
+
+        Success       Error
+
+           |             |
+
+           ▼             ▼
+
+      COMPLETED       FAILED
+
+           |             |
+
+           └──────┬──────┘
+
+                  |
+
+                  ▼
+
+               ACTIVE
+```
+
+---
+
+# 7. Agent Status
+
+Supported states:
+
+## CREATED
+
+Agent exists but incomplete.
+
+---
+
+## INACTIVE
+
+Configured but not running.
+
+---
+
+## ACTIVE
+
+Ready for execution.
+
+---
+
+## RUNNING
+
+Currently processing tasks.
+
+---
+
+## PAUSED
+
+Temporarily stopped.
+
+---
+
+## FAILED
+
+Requires attention.
+
+---
+
+## ARCHIVED
+
+No longer used.
+
+---
+
+# 8. Agent Configuration Model
+
+Each agent contains:
+
+```
+Agent
+
+├── Identity
+
+├── Objective
+
+├── Sources
+
+├── Discovery Rules
+
+├── Analysis Rules
+
+├── Scoring Rules
+
+├── Output Rules
+
+├── Schedule
+
+├── AI Models
+
+├── Watermark
+
+└── Limits
+```
+
+---
+
+# 9. Agent Identity
+
+Example:
+
+```
+id:
+funny-moment-agent
+
+name:
+Funny Moment Finder
+
+description:
+Find humorous clips.
+
+category:
+Entertainment
+```
+
+---
+
+# 10. Agent Objective
+
+Defines what the agent searches for.
+
+Example:
+
+```
+Objective:
+
+Find moments containing:
+
+- humor
+- surprise
+- unexpected events
+- emotional reactions
+```
+
+---
+
+# 11. Source Configuration
+
+Agent defines allowed sources.
+
+Example:
+
+```
+sources:
+
+- YouTube
+
+- Vimeo
+
+- Local Files
+```
+
+Future:
+
+```
+TikTok
+
+Instagram
+
+Twitch
+
+```
+
+---
+
+# 12. Discovery Rules
+
+Controls video discovery.
+
+Example:
+
+```
+keywords:
+
+- funny
+- comedy
+- reaction
+
+language:
+
+English
+
+minimum duration:
+
+10 minutes
+
+maximum duration:
+
+3 hours
+```
+
+---
+
+# 13. Analysis Rules
+
+Defines AI behavior.
+
+Example:
+
+```
+Analyze:
+
+- transcript
+- emotion
+- context
+- visual scene
+- audience reaction
+```
+
+---
+
+# 14. Scoring Configuration
+
+Each agent has different scoring.
+
+Example:
+
+Funny Agent:
+
+```
+Humor:
+40%
+
+Emotion:
+20%
+
+Unexpected Event:
+20%
+
+Engagement:
+20%
+```
+
+Motivation Agent:
+
+```
+Inspiration:
+50%
+
+Story:
+30%
+
+Emotion:
+20%
+```
+
+---
+
+# 15. Output Configuration
+
+Defines generated clip.
+
+Example:
+
+```
+Format:
+
+Vertical 9:16
+
+Resolution:
+
+1080x1920
+
+Duration:
+
+30-90 seconds
+
+Subtitle:
+
+Enabled
+
+Watermark:
+
+Enabled
+```
+
+---
+
+# 16. Watermark System
+
+Watermark belongs to Agent.
+
+Example:
+
+```
+Agent:
+
+Funny Moment Agent
+
+Watermark:
+
+@mychannel
+
+Position:
+
+bottom-right
+
+Opacity:
+
+60%
+```
+
+Every output generated by this agent automatically receives this watermark.
+
+---
+
+# 17. Agent Memory
+
+Agents maintain memory.
+
+Stored:
+
+- processed videos
+- rejected videos
+- successful clips
+- user feedback
+- scoring history
+
+Purpose:
+
+Improve future selection.
+
+---
+
+# 18. Agent Memory Architecture
+
+```
+Agent
+
+ |
+
+ ├── SQLite
+
+ |      Metadata
+
+ |
+
+ └── LanceDB
+
+        Embeddings
+```
+
+---
+
+# 19. Multi Agent Architecture
+
+Multiple agents can run simultaneously.
+
+Example:
+
+```
+System
+
+|
+
+├── Funny Agent
+
+├── Motivation Agent
+
+├── Podcast Agent
+
+└── Gaming Agent
+```
+
+---
+
+# 20. Agent Isolation
+
+Each agent has isolated:
+
+- configuration
+- memory
+- workflow
+- output folder
+
+Example:
+
+```
+workspace/
+
+agents/
+
+    funny/
+
+    motivation/
+
+    podcast/
+```
+
+---
+
+# 21. Agent Execution
+
+Agent execution:
+
+```
+Agent Activated
+
+↓
+
+Scheduler
+
+↓
+
+Create Workflow
+
+↓
+
+Execute Pipeline
+
+↓
+
+Store Result
+
+↓
+
+Notify User
+```
+
+---
+
+# 22. Agent Permissions
+
+Agents have permissions:
+
+```
+Discovery
+
+Download
+
+AI Analysis
+
+Rendering
+
+Storage
+```
+
+Future:
+
+```
+Publishing
+
+External API
+```
+
+---
+
+# 23. Agent Resource Limits
+
+To protect laptop resources:
+
+Example:
+
+```
+max_parallel_tasks:
+
+2
+
+max_download:
+
+1
+
+max_render:
+
+1
+```
+
+---
+
+# 24. Agent Template System
+
+Users can create agents from templates.
+
+Examples:
+
+```
+Entertainment Template
+
+Podcast Template
+
+Education Template
+
+News Template
+
+Gaming Template
+```
+
+Template contains:
+
+- default prompts
+- scoring
+- workflow
+
+---
+
+# 25. Agent Prompt Architecture
+
+Agents use layered prompts.
+
+```
+System Prompt
+
++
+
+Agent Objective
+
++
+
+Task Context
+
++
+
+Video Data
+
++
+
+User Rules
+```
+
+---
+
+# 26. Agent Communication
+
+Agents communicate through events.
+
+Example:
+
+```
+DiscoveryCompleted
+
+↓
+
+AnalysisStarted
+
+↓
+
+ScoringCompleted
+
+↓
+
+RenderRequested
+```
+
+---
+
+# 27. Agent Failure Handling
+
+Failure does not destroy agent.
+
+Example:
+
+```
+Video Download Failed
+
+↓
+
+Retry
+
+↓
+
+Skip
+
+↓
+
+Continue
+```
+
+---
+
+# 28. Agent Learning Loop
+
+Future capability:
+
+```
+Generated Clip
+
+↓
+
+User Feedback
+
+↓
+
+Update Scoring
+
+↓
+
+Improve Agent
+```
+
+---
+
+# 29. Agent API Concept
+
+Internal interface:
+
+```
+Agent
+
+create()
+
+activate()
+
+pause()
+
+execute()
+
+stop()
+
+delete()
+```
+
+---
+
+# 30. Agent Design Rules
+
+Mandatory:
+
+✓ Agent must be configurable
+
+✓ Agent must be isolated
+
+✓ Agent must be resumable
+
+✓ Agent must not contain infrastructure logic
+
+✓ Agent must use workflow engine
+
+✓ Agent must use interfaces
+
+✓ Agent must store memory
+
+---
+
+# 31. Final Agent Architecture
+
+```
+                USER
+
+                 |
+
+                 ▼
+
+          Agent Manager
+
+                 |
+
+                 ▼
+
+        Agent Configuration
+
+                 |
+
+                 ▼
+
+          Workflow Engine
+
+                 |
+
+        ┌────────┼────────┐
+
+        ▼        ▼        ▼
+
+ Discovery  Analysis  Rendering
+
+        |
+
+        ▼
+
+     Storage
+
+        |
+
+        ▼
+
+    User Review
+```
+
+---
+
+# 32. Summary
+
+The Agent System transforms ClipStudio AI from a simple automation tool into an AI Operating System.
+
+Agents provide:
+
+- specialization
+- automation
+- personalization
+- scalability
+- continuous improvement
+
+The Agent Architecture is the foundation for autonomous content production.
+
+---
+
+End of Document
