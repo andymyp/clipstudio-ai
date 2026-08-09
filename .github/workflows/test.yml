@@ -19,4 +19,4 @@ jobs:
       - run: uv run --project backend ruff check backend tests
       - run: uv run --project backend black --check backend tests
       - working-directory: backend
-        run: uv run --project pyproject.toml mypy app
+        run: uv run --project pyproject.toml mypy --explicit-package-bases app

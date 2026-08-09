@@ -11,7 +11,7 @@ Requirements: Python 3.12+ and `uv`.
 ```powershell
 uv sync --project backend --group dev
 uv run --project backend pytest
-uv run --project backend uvicorn app.main:app --app-dir backend --reload
+uv run --project backend uvicorn apps.backend.app.main:app --reload
 ```
 
 The API exposes `/health`, `/api/v1/system/info`, and `/api/v1/config` during

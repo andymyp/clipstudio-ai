@@ -11,12 +11,13 @@
 - Base exception taxonomy and in-process event bus added.
 - Development tooling configuration added.
 - Project initialization completed: deployable backend, desktop shell, CI, scripts, and local stack configuration added.
+- Backend core architecture completed: API envelope, error policy, DI container, repository/service/task ports, middleware, and security interfaces added.
 
 ## In Progress
 
-- None. Prompt 001 is complete and awaiting checkpoint approval.
+- None. Prompt 002 is complete and awaiting checkpoint approval.
 
 ## Remaining
 
-- Execute Prompt 002 onward in the mandated order after checkpoint approval.
+- Execute Prompt 003 onward in the mandated order after checkpoint approval.
 - Add business capabilities only in their assigned prompts.

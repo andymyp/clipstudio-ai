@@ -1,40 +1,19 @@
-"""FastAPI application factory and process entry point."""
+"""Compatibility export for the deployable application factory."""
 
-from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from collections.abc import Callable
+from importlib import import_module
+from typing import cast
 
 from fastapi import FastAPI
 
-from .api.routes import router
-from .core.config import get_settings
-from .core.logging import configure_logging, get_logger
-
-
-@asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    """Initialize process-wide infrastructure and release it on shutdown."""
-    settings = get_settings()
-    configure_logging(settings)
-    logger = get_logger(__name__)
-    logger.info("application_starting", extra={"event": "application_starting"})
-    yield
-    logger.info("application_stopping", extra={"event": "application_stopping"})
-
 
 def create_app() -> FastAPI:
-    """Create a configured FastAPI instance."""
-    settings = get_settings()
-    application = FastAPI(
-        title=settings.app.name,
-        version=settings.app.version,
-        description="Local-first AI content production control plane.",
-        lifespan=lifespan,
-    )
-    application.include_router(router)
-    return application
+    """Load the deployable factory without creating a second application."""
+    module = import_module("apps.backend.app.main")
+    factory = cast(Callable[[], FastAPI], module.create_app)
+    return factory()
 
 
 app = create_app()
-
 
 __all__ = ["app", "create_app"]

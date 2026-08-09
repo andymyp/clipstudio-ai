@@ -48,3 +48,4 @@ python_version = "3.12"
 strict = true
 exclude = "\\.venv"
 explicit_package_bases = true
+mypy_path = ".."
