@@ -2,6 +2,7 @@
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from ..database.models import Workflow
 from .base import BaseRepository
@@ -29,3 +30,12 @@ class WorkflowRepository(BaseRepository[Workflow]):
             statement = statement.where(Workflow.status == status)
         result = await self.session.execute(statement.offset(offset).limit(limit))
         return list(result.scalars().all())
+
+    async def get_with_tasks(self, workflow_id: str) -> Workflow | None:
+        """Load a workflow instance and its task rows for execution."""
+        result = await self.session.execute(
+            select(Workflow)
+            .options(selectinload(Workflow.tasks))
+            .where(Workflow.id == workflow_id)
+        )
+        return result.scalar_one_or_none()

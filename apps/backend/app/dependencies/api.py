@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core.security import LocalTokenValidator
 from ..services.agents.manager import AgentManager
+from ..services.workflow.manager import WorkflowManager
 from .container import AppContainer, get_container
 
 
@@ -62,4 +63,17 @@ async def get_agent_manager(
         session_factory=container.database_sessions,
         event_bus=container.event_bus,
         task_runner=container.task_runner,
+    )
+
+
+async def get_workflow_manager(
+    session: AsyncSession = Depends(get_db_session),
+    container: AppContainer = Depends(get_container),
+) -> WorkflowManager:
+    """Inject a workflow manager over the request transaction and queue."""
+    return WorkflowManager(
+        session=session,
+        session_factory=container.database_sessions,
+        event_bus=container.event_bus,
+        scheduler=container.workflow_scheduler,
     )

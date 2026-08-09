@@ -1,6 +1,7 @@
 """Persistence-aware agent manager and asynchronous execution adapter."""
 
 from collections.abc import Callable
+from typing import Any
 from uuid import uuid4
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -258,3 +259,26 @@ class AgentManager:
             active_tasks=self.task_runner.active_count,
             metrics=runtime.metrics,
         )
+
+    async def create_workflow(
+        self, agent_id: str, definition: Any, workflow_manager: Any
+    ) -> Any:
+        """Create a workflow bound to this agent through the workflow service port."""
+        await self._load(agent_id)
+        if definition.agent_id != agent_id:
+            definition = definition.model_copy(update={"agent_id": agent_id})
+        return await workflow_manager.create(definition)
+
+    async def start_workflow(
+        self, agent_id: str, workflow_id: str, workflow_manager: Any
+    ) -> Any:
+        """Queue an agent-owned workflow after verifying agent ownership context."""
+        await self._load(agent_id)
+        return await workflow_manager.enqueue(workflow_id)
+
+    async def monitor_workflow(
+        self, agent_id: str, workflow_id: str, workflow_manager: Any
+    ) -> Any:
+        """Read an agent-owned workflow through the workflow manager port."""
+        await self._load(agent_id)
+        return await workflow_manager.monitor(workflow_id)

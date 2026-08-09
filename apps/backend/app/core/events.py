@@ -47,6 +47,48 @@ class AgentFailed(AgentEvent):
     error: str = ""
 
 
+@dataclass(frozen=True, slots=True)
+class WorkflowEvent(Event):
+    """Base event for workflow and task execution."""
+
+    workflow_id: str = ""
+    task_id: str | None = None
+
+
+class WorkflowCreated(WorkflowEvent):
+    """Published after a workflow instance is persisted."""
+
+
+class WorkflowStarted(WorkflowEvent):
+    """Published when workflow execution begins."""
+
+
+class TaskStarted(WorkflowEvent):
+    """Published when one workflow task begins."""
+
+
+class TaskCompleted(WorkflowEvent):
+    """Published when one workflow task succeeds."""
+
+
+@dataclass(frozen=True, slots=True)
+class TaskFailed(WorkflowEvent):
+    """Published when one workflow task exhausts its retry policy."""
+
+    error: str = ""
+
+
+class WorkflowCompleted(WorkflowEvent):
+    """Published when every workflow task succeeds."""
+
+
+@dataclass(frozen=True, slots=True)
+class WorkflowFailed(WorkflowEvent):
+    """Published when a workflow stops after task failure."""
+
+    error: str = ""
+
+
 EventHandler = Callable[[Event], Awaitable[None]]
 
 

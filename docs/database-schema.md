@@ -14,8 +14,8 @@ are used instead of PostgreSQL-only JSONB to preserve local SQLite support.
 | `video_sources` | Discovered source metadata, URL uniqueness, and content hash |
 | `transcripts` | Transcript text, segments, language, and timestamps |
 | `video_analysis` | Structured analysis scores and AI result payload |
-| `workflows` | Workflow execution status, current step, and progress |
-| `workflow_tasks` | Resumable task status, result, and error state |
+  | `workflows` | Persisted workflow definition, execution status, current step, progress, and errors |
+  | `workflow_tasks` | Resumable task input/dependencies, status, result, error, and retry counters |
 | `clips` | Generated clip artifact metadata and review status |
 | `clip_metadata` | Platform-specific title, description, hashtags, and platform |
 | `ai_models` | Replaceable model provider/type/version registry |

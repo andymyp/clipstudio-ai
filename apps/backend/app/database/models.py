@@ -10,6 +10,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Index,
+    Integer,
     String,
     Text,
     UniqueConstraint,
@@ -175,9 +176,17 @@ class Workflow(EntityMixin, Base):
     progress: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    definition_json: Mapped[dict[str, Any]] = mapped_column(
+        "definition", JSON, default=dict, nullable=False
+    )
+    errors_json: Mapped[list[str]] = mapped_column(
+        "errors", JSON, default=list, nullable=False
+    )
 
     agent: Mapped[Agent | None] = relationship(back_populates="workflows")
-    tasks: Mapped[list["WorkflowTask"]] = relationship(back_populates="workflow")
+    tasks: Mapped[list["WorkflowTask"]] = relationship(
+        back_populates="workflow", cascade="all, delete-orphan"
+    )
 
 
 class WorkflowTask(EntityMixin, Base):
@@ -193,6 +202,12 @@ class WorkflowTask(EntityMixin, Base):
     status: Mapped[str] = mapped_column(String(40), nullable=False, default="pending")
     result: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     error: Mapped[str | None] = mapped_column(Text)
+    input_json: Mapped[dict[str, Any]] = mapped_column(
+        "input", JSON, default=dict, nullable=False
+    )
+    depends_on: Mapped[list[str]] = mapped_column(JSON, default=list, nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    max_attempts: Mapped[int] = mapped_column(Integer, default=3, nullable=False)
 
     workflow: Mapped[Workflow] = relationship(back_populates="tasks")
 
