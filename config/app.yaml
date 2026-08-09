@@ -1,0 +1,6 @@
+name: ClipStudio AI
+version: 0.1.0
+environment: development
+debug: false
+host: 127.0.0.1
+port: 8000

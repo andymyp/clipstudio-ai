@@ -1,0 +1,4 @@
+provider: local
+llm: disabled
+speech: faster-whisper-small
+embeddings: sentence-transformers
