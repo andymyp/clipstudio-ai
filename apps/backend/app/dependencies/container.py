@@ -7,8 +7,10 @@ from logging import Logger
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from ..core.config import Settings, get_settings
+from ..core.events import EventBus
 from ..core.logging import get_logger
 from ..database.session import Database, create_database
+from ..tasks.base import AsyncTaskRunner
 
 
 @dataclass(slots=True)
@@ -18,6 +20,8 @@ class AppContainer:
     settings: Settings
     logger: Logger
     database: Database
+    event_bus: EventBus
+    task_runner: AsyncTaskRunner
 
     @property
     def database_sessions(self) -> async_sessionmaker[AsyncSession]:
@@ -33,4 +37,6 @@ def get_container() -> AppContainer:
         settings=settings,
         logger=get_logger("clipstudio.container"),
         database=create_database(settings),
+        event_bus=EventBus(),
+        task_runner=AsyncTaskRunner(),
     )

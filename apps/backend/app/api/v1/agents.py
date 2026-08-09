@@ -1,16 +1,23 @@
 """Agent management endpoints."""
 
-from uuid import uuid4
-
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ...database.models import Agent
-from ...dependencies.api import UserContext, get_db_session, get_user_context
+from ...dependencies.api import (
+    UserContext,
+    get_agent_manager,
+    get_db_session,
+    get_user_context,
+)
 from ...repositories.agents import AgentRepository
 from ...schemas.api import AgentResponse, AgentUpdate, JobResponse, Page
 from ...schemas.common import ApiResponse
 from ...schemas.entities import AgentCreate
+from ...services.agents.manager import (
+    AgentManager,
+    AgentNotFoundError,
+    AgentOperationError,
+)
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 
@@ -39,10 +46,11 @@ async def list_agents(
 async def create_agent(
     payload: AgentCreate,
     session: AsyncSession = Depends(get_db_session),
+    manager: AgentManager = Depends(get_agent_manager),
     _: UserContext = Depends(get_user_context),
 ) -> ApiResponse[AgentResponse]:
     """Create an inactive agent definition."""
-    agent = await AgentRepository(session).create(Agent(**payload.model_dump()))
+    agent = await manager.create(payload)
     return ApiResponse(success=True, data=AgentResponse.model_validate(agent))
 
 
@@ -55,7 +63,7 @@ async def get_agent(
     """Get an agent by id."""
     agent = await AgentRepository(session).get(agent_id)
     if agent is None:
-        raise HTTPException(status_code=404, detail="Agent not found.")
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
     return ApiResponse(success=True, data=AgentResponse.model_validate(agent))
 
 
@@ -70,7 +78,7 @@ async def update_agent(
     repository = AgentRepository(session)
     agent = await repository.get(agent_id)
     if agent is None:
-        raise HTTPException(status_code=404, detail="Agent not found.")
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(agent, field, value)
     await repository.update(agent)
@@ -81,12 +89,14 @@ async def update_agent(
 async def delete_agent(
     agent_id: str,
     session: AsyncSession = Depends(get_db_session),
+    manager: AgentManager = Depends(get_agent_manager),
     _: UserContext = Depends(get_user_context),
 ) -> ApiResponse[dict[str, bool]]:
     """Delete an agent definition."""
-    deleted = await AgentRepository(session).delete(agent_id)
-    if not deleted:
-        raise HTTPException(status_code=404, detail="Agent not found.")
+    try:
+        await manager.delete(agent_id)
+    except AgentNotFoundError:
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
     return ApiResponse(success=True, data={"deleted": True})
 
 
@@ -96,7 +106,7 @@ async def _set_agent_status(
     repository = AgentRepository(session)
     agent = await repository.get(agent_id)
     if agent is None:
-        raise HTTPException(status_code=404, detail="Agent not found.")
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
     agent.status = new_status
     await repository.update(agent)
     return ApiResponse(success=True, data=AgentResponse.model_validate(agent))
@@ -106,20 +116,34 @@ async def _set_agent_status(
 async def activate_agent(
     agent_id: str,
     session: AsyncSession = Depends(get_db_session),
+    manager: AgentManager = Depends(get_agent_manager),
     _: UserContext = Depends(get_user_context),
 ) -> ApiResponse[AgentResponse]:
     """Activate an agent without starting execution."""
-    return await _set_agent_status(agent_id, "active", session)
+    try:
+        agent = await manager.activate(agent_id)
+    except AgentNotFoundError:
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
+    except AgentOperationError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    return ApiResponse(success=True, data=AgentResponse.model_validate(agent))
 
 
 @router.post("/{agent_id}/pause", response_model=ApiResponse[AgentResponse])
 async def pause_agent(
     agent_id: str,
     session: AsyncSession = Depends(get_db_session),
+    manager: AgentManager = Depends(get_agent_manager),
     _: UserContext = Depends(get_user_context),
 ) -> ApiResponse[AgentResponse]:
     """Pause an agent without cancelling persisted work."""
-    return await _set_agent_status(agent_id, "paused", session)
+    try:
+        agent = await manager.pause(agent_id)
+    except AgentNotFoundError:
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
+    except AgentOperationError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    return ApiResponse(success=True, data=AgentResponse.model_validate(agent))
 
 
 @router.post(
@@ -128,9 +152,14 @@ async def pause_agent(
 async def run_agent(
     agent_id: str,
     session: AsyncSession = Depends(get_db_session),
+    manager: AgentManager = Depends(get_agent_manager),
     _: UserContext = Depends(get_user_context),
 ) -> ApiResponse[JobResponse]:
     """Queue an agent run placeholder for the future workflow engine."""
-    if await AgentRepository(session).get(agent_id) is None:
-        raise HTTPException(status_code=404, detail="Agent not found.")
-    return ApiResponse(success=True, data=JobResponse(job_id=str(uuid4())))
+    try:
+        job_id = await manager.enqueue(agent_id)
+    except AgentNotFoundError:
+        raise HTTPException(status_code=404, detail="Agent not found.") from None
+    except AgentOperationError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    return ApiResponse(success=True, data=JobResponse(job_id=job_id))

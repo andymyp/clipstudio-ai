@@ -27,6 +27,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     logger.info("application_starting", extra={"event": "application_starting"})
     yield
     logger.info("application_stopping", extra={"event": "application_stopping"})
+    container.task_runner.cancel_all()
     await container.database.dispose()
 
 

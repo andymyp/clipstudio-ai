@@ -25,17 +25,27 @@ class Worker(Protocol):
 class AsyncTaskRunner:
     """Small in-process runner for foundation-level async jobs."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, max_active: int = 100) -> None:
+        if max_active < 1:
+            raise ValueError("max_active must be positive")
         self._tasks: set[asyncio.Task[None]] = set()
+        self._max_active = max_active
 
     def submit(
         self, operation: Callable[[], Coroutine[Any, Any, None]]
     ) -> asyncio.Task[None]:
         """Schedule an operation and retain its task handle."""
+        if self.active_count >= self._max_active:
+            raise RuntimeError("task runner resource limit reached")
         task: asyncio.Task[None] = asyncio.create_task(operation())
         self._tasks.add(task)
         task.add_done_callback(self._tasks.discard)
         return task
+
+    def cancel_all(self) -> None:
+        """Request cancellation of every currently scheduled operation."""
+        for task in tuple(self._tasks):
+            task.cancel()
 
     @property
     def active_count(self) -> int:

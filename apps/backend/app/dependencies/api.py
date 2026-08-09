@@ -8,6 +8,7 @@ from fastapi import Depends, Header, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core.security import LocalTokenValidator
+from ..services.agents.manager import AgentManager
 from .container import AppContainer, get_container
 
 
@@ -48,4 +49,17 @@ async def get_user_context(
     return UserContext(
         subject="local",
         permissions=frozenset({"read", "write", "admin"}),
+    )
+
+
+async def get_agent_manager(
+    session: AsyncSession = Depends(get_db_session),
+    container: AppContainer = Depends(get_container),
+) -> AgentManager:
+    """Inject an agent manager over the request transaction and app ports."""
+    return AgentManager(
+        session=session,
+        session_factory=container.database_sessions,
+        event_bus=container.event_bus,
+        task_runner=container.task_runner,
     )

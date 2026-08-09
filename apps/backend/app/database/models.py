@@ -60,7 +60,7 @@ class Agent(EntityMixin, Base):
     )
 
     config: Mapped["AgentConfig | None"] = relationship(
-        back_populates="agent", uselist=False
+        back_populates="agent", uselist=False, cascade="all, delete-orphan"
     )
     video_sources: Mapped[list["VideoSource"]] = relationship(back_populates="agent")
     workflows: Mapped[list["Workflow"]] = relationship(back_populates="agent")
