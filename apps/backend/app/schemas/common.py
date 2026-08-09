@@ -1,10 +1,6 @@
 """Standard API response contracts."""
 
-from typing import Generic, TypeVar
-
 from pydantic import BaseModel, ConfigDict, Field
-
-DataT = TypeVar("DataT")
 
 
 class ErrorDetail(BaseModel):
@@ -15,7 +11,7 @@ class ErrorDetail(BaseModel):
     request_id: str | None = None
 
 
-class ApiResponse(BaseModel, Generic[DataT]):
+class ApiResponse[DataT](BaseModel):
     """Common success and failure envelope."""
 
     model_config = ConfigDict(

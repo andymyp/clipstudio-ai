@@ -19,3 +19,13 @@ class WorkflowRepository(BaseRepository[Workflow]):
             select(Workflow).where(Workflow.status == "pending").limit(limit)
         )
         return list(result.scalars().all())
+
+    async def list_filtered(
+        self, *, status: str | None = None, limit: int = 100, offset: int = 0
+    ) -> list[Workflow]:
+        """Return a bounded workflow page, optionally filtered by status."""
+        statement = select(Workflow)
+        if status:
+            statement = statement.where(Workflow.status == status)
+        result = await self.session.execute(statement.offset(offset).limit(limit))
+        return list(result.scalars().all())

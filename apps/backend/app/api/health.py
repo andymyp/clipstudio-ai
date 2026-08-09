@@ -1,7 +1,5 @@
 """Health endpoints for process and dependency readiness."""
 
-from typing import TypeVar
-
 from fastapi import APIRouter, Request
 
 from ..core.config import get_settings
@@ -9,10 +7,9 @@ from ..database.session import database_health
 from ..schemas.common import ApiResponse, HealthData, SystemInfo
 
 router = APIRouter(tags=["system"])
-DataT = TypeVar("DataT")
 
 
-def _success(data: DataT) -> ApiResponse[DataT]:
+def _success[DataT](data: DataT) -> ApiResponse[DataT]:
     return ApiResponse(success=True, data=data)
 
 

@@ -19,3 +19,13 @@ class ClipRepository(BaseRepository[Clip]):
             select(Clip).where(Clip.status == status).limit(limit)
         )
         return list(result.scalars().all())
+
+    async def list_filtered(
+        self, *, status: str | None = None, limit: int = 100, offset: int = 0
+    ) -> list[Clip]:
+        """Return a bounded clip page, optionally filtered by status."""
+        statement = select(Clip)
+        if status:
+            statement = statement.where(Clip.status == status)
+        result = await self.session.execute(statement.offset(offset).limit(limit))
+        return list(result.scalars().all())

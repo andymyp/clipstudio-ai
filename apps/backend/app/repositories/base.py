@@ -1,15 +1,12 @@
 """Generic async repository implementation."""
 
 from collections.abc import Sequence
-from typing import Generic, TypeVar
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-ModelT = TypeVar("ModelT")
 
-
-class BaseRepository(Generic[ModelT]):
+class BaseRepository[ModelT]:
     """CRUD adapter that keeps persistence details out of services."""
 
     def __init__(self, session: AsyncSession, model: type[ModelT]) -> None:

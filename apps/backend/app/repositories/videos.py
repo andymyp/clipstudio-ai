@@ -19,3 +19,23 @@ class VideoRepository(BaseRepository[VideoSource]):
             select(VideoSource).where(VideoSource.url == url)
         )
         return result.scalar_one_or_none()
+
+    async def list_filtered(
+        self,
+        *,
+        platform: str | None = None,
+        status: str | None = None,
+        search: str | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[VideoSource]:
+        """Return a bounded filtered source page."""
+        statement = select(VideoSource)
+        if platform:
+            statement = statement.where(VideoSource.platform == platform)
+        if status:
+            statement = statement.where(VideoSource.status == status)
+        if search:
+            statement = statement.where(VideoSource.title.ilike(f"%{search}%"))
+        result = await self.session.execute(statement.offset(offset).limit(limit))
+        return list(result.scalars().all())
