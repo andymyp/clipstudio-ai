@@ -1,0 +1,3 @@
+path: storage
+log_path: logs
+max_cache_mb: 2048

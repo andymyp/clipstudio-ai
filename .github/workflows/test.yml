@@ -1,0 +1,22 @@
+name: test
+
+on:
+  push:
+    branches: [main, DEV]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --project backend --group dev
+      - run: uv run --project backend pytest
+      - run: uv run --project backend ruff check --config backend/pyproject.toml backend tests apps/backend
+      - run: uv run --project backend black --check backend tests
+      - working-directory: backend
+        run: uv run --project pyproject.toml mypy --explicit-package-bases app

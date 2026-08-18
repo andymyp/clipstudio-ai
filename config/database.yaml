@@ -1,0 +1,3 @@
+url: sqlite+aiosqlite:///./storage/clipstudio.db
+echo: false
+pool_size: 5

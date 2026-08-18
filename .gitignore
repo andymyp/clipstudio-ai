@@ -1,5 +1,10 @@
-# Logs
-logs
+# Logs and runtime artifacts
+logs/*
+!logs/**/
+!logs/**/.gitkeep
+storage/*
+!storage/**/
+!storage/**/.gitkeep
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -53,6 +58,16 @@ web_modules/
 
 # Optional eslint cache
 .eslintcache
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 
 # Optional stylelint cache
 .stylelintcache

@@ -1,0 +1,32 @@
+name: clipstudio-ai
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    environment:
+      CLIPSTUDIO_ENVIRONMENT: development
+      CLIPSTUDIO_LOG_LEVEL: INFO
+      CLIPSTUDIO_DATABASE_URL: sqlite+aiosqlite:////app/storage/clipstudio.db
+      CLIPSTUDIO_STORAGE_PATH: /app/storage
+      CLIPSTUDIO_LOG_PATH: /app/logs
+      CLIPSTUDIO_VECTOR_BACKEND: lancedb
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./storage:/app/storage
+      - ./logs:/app/logs
+
+  # Optional interoperability service for connector development. The
+  # application remains local-first and uses embedded LanceDB by default.
+  qdrant:
+    image: qdrant/qdrant:v1.13.6
+    profiles: [vector-compat]
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  qdrant_data:
